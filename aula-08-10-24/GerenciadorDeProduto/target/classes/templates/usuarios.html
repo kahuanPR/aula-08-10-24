@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuários</title>
+    <style>
+		body {
+		    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		    margin: 0;
+		    padding: 0;
+		    background-color: #f4f7fa;
+		}
+		
+		header {
+		    background-color: #007bff;
+		    color: #fff;
+		    padding: 15px 0;
+		    text-align: center;
+		}
+		
+		h1, h2 {
+		    margin: 15px 0;
+		}
+		
+		main {
+		    max-width: 900px;
+		    margin: 20px auto;
+		    padding: 20px;
+		    background-color: #ffffff;
+		    border-radius: 8px;
+		    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+		}
+		
+		.form-section, .table-section {
+		    margin-bottom: 30px;
+		}
+		
+		form {
+		    display: flex;
+		    flex-direction: column;
+		    gap: 15px;
+		}
+		
+		label {
+		    font-weight: bold;
+		}
+		
+		input, select {
+		    padding: 12px;
+		    margin-bottom: 10px;
+		    border: 1px solid #ccc;
+		    border-radius: 5px;
+		    transition: border 0.3s;
+		}
+		
+		input:focus, select:focus {
+		    border: 1px solid #007bff;
+		    outline: none;
+		}
+		
+		button {
+		    padding: 12px;
+		    background-color: #28a745;
+		    color: #fff;
+		    border: none;
+		    border-radius: 5px;
+		    cursor: pointer;
+		    transition: background-color 0.3s;
+		}
+		
+		button:hover {
+		    background-color: #218838;
+		}
+		
+		.table-section {
+		    overflow-x: auto; /* Permite rolagem em telas pequenas */
+		}
+		
+		table {
+		    width: 100%;
+		    border-collapse: collapse;
+		}
+		
+		th, td {
+		    padding: 12px;
+		    border: 1px solid #ddd;
+		    text-align: left;
+		}
+		
+		th {
+		    background-color: #007bff;
+		    color: white;
+		}
+		
+		tr:hover {
+		    background-color: #f1f1f1;
+		}
+		
+		footer {
+		    text-align: center;
+		    padding: 15px 0;
+		    background-color: #333;
+		    color: #fff;
+		    margin-top: 20px;
+		}
+    </style>
+</head>
+<body>
+<header>
+        <h2>Lista de Usuarios</h2>
+        <nav>
+            <a th:href="@{/usuarios}">Produtos</a>
+            <a th:href="@{/pedidos}">Pedidos</a>
+            <a th:href="@{/produtos}">Usuários</a>
+            <!-- Adicione mais links de menu conforme necessário -->
+        </nav>
+    </header>
+    <main>
+        <section class="form-section">
+            <h2 th:text="${usuario.id != null} ? 'Editar Usuário' : 'Adicionar Usuário'"></h2>
+            <form th:action="@{${usuario.id != null} ? '/usuarios/atualizar' : '/usuarios'}" th:object="${usuario}" method="post">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" th:field="*{nome}" required>
+
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" th:field="*{email}" required>
+
+                <label for="telefone">Telefone:</label>
+                <input type="tel" id="telefone" name="telefone" th:field="*{telefone}" required>
+
+                <label for="tipoUsuario">Tipo de Usuário:</label>
+                <select id="tipoUsuario" name="tipoUsuario" th:field="*{tipoUsuario}">
+                    <option value="" disabled selected>Selecione o Tipo</option>
+                    <option th:value="'ADMIN'">Admin</option>
+                    <option th:value="'GERENTE'">Gerente</option>
+                    <option th:value="'FUNCIONARIO'">Funcionário</option>
+                    <option th:value="'ALUNO'">Aluno</option>
+                </select>
+
+                <button type="submit" th:text="${usuario.id != null} ? 'Atualizar' : 'Adicionar'"></button>
+            </form>
+        </section>
+
+        <section class="table-section">
+            <h2>Lista de Usuários</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Telefone</th>
+                        <th>Tipo de Usuário</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="usuario : ${usuarios}">
+                        <td th:text="${usuario.id}"></td>
+                        <td th:text="${usuario.nome}"></td>
+                        <td th:text="${usuario.email}"></td>
+                        <td th:text="${usuario.telefone}"></td>
+                        <td th:text="${usuario.tipoUsuario}"></td>
+                        <td>
+                            <form th:action="@{/usuarios/excluir/{id}(id=${usuario.id})}" method="post" style="display:inline;">
+                                <button type="submit">Excluir</button>
+                            </form>
+                            <form th:action="@{/usuarios/editar/{id}(id=${usuario.id})}" method="get" style="display:inline;">
+                                <button type="submit">Editar</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Gerenciador de Usuários</p>
+    </footer>
+</body>
+</html>
